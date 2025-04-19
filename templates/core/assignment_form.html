@@ -1,0 +1,79 @@
+{% extends 'base.html' %} {% load custom_filters %} {% load crispy_forms_tags %}
+{% block title %} {% if is_update %}Edit{% else %}New{% endif %} Assignment {%
+endblock %} {% block content %}
+<div class="container mt-4">
+  <h1>
+    {% if is_update %} Edit Assignment {% else %} Create New Assignment {% endif
+    %}
+  </h1>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %} {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">
+          {% if is_update %} Update Assignment {% else %} Create Assignment {%
+          endif %}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link
+  href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+  rel="stylesheet"
+/>
+
+<script>
+  $(document).ready(function () {
+    // Initialize select2 for inventory_item and agent_name fields
+    $("#id_inventory_item").select2({
+      placeholder: "Select an inventory item",
+      allowClear: true,
+    });
+
+    $("#id_agent_name").select2({
+      placeholder: "Select an agent",
+      allowClear: true,
+      minimumInputLength: 2,
+      ajax: {
+        url: '{% url "core:agent-autocomplete" %}',
+        dataType: "json",
+        delay: 250,
+        data: function (params) {
+          return {
+            q: params.term,
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.results,
+          };
+        },
+        cache: true,
+      },
+      tags: true,
+    });
+  });
+
+  // Bootstrap validation script
+  (function () {
+    "use strict";
+    const forms = document.querySelectorAll(".needs-validation");
+    Array.from(forms).forEach(function (form) {
+      form.addEventListener(
+        "submit",
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
+</script>
+{% endblock %}

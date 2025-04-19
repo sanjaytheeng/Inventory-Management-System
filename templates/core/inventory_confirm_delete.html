@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% block title %}Delete Inventory Item{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h3>Delete Inventory Item</h3>
+      </div>
+      <div class="card-body">
+        <p class="lead">Are you sure you want to delete "{{ object.name }}"?</p>
+
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle"></i>
+          This action cannot be undone. All assignments related to this item
+          will also be deleted.
+        </div>
+
+        <dl class="row mt-4">
+          <dt class="col-sm-4">Name:</dt>
+          <dd class="col-sm-8">{{ object.name }}</dd>
+
+          <dt class="col-sm-4">Description:</dt>
+          <dd class="col-sm-8">{{ object.description }}</dd>
+
+          <dt class="col-sm-4">Total Quantity:</dt>
+          <dd class="col-sm-8">{{ object.total_quantity }}</dd>
+
+          <dt class="col-sm-4">In Use:</dt>
+          <dd class="col-sm-8">{{ object.in_use_quantity }}</dd>
+        </dl>
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+            <a
+              href="{% url 'core:inventory_list' %}"
+              class="btn btn-secondary me-md-2"
+              >Cancel</a
+            >
+            <button type="submit" class="btn btn-danger">
+              <i class="bi bi-trash"></i> Delete Item
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

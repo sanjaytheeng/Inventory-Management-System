@@ -1,0 +1,67 @@
+/* Custom styles for the inventory management system */
+
+/* General styles */
+body {
+  background-color: #f8f9fa;
+}
+
+/* Card styles */
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Form styles */
+.form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Table styles */
+.table th {
+  background-color: #f8f9fa;
+}
+
+/* Status badges */
+.badge-assigned {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-returned {
+  background-color: #6c757d;
+  color: white;
+}
+
+.badge-reassigned {
+  background-color: #17a2b8;
+  color: white;
+}
+
+/* Inventory status indicators */
+.status-available {
+  color: #28a745;
+}
+
+.status-in-use {
+  color: #dc3545;
+}
+
+/* Custom button styles */
+.btn-action {
+  margin-right: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}

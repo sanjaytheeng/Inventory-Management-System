@@ -1,0 +1,149 @@
+{% extends 'base.html' %} {% block title %}Assignment Details{% endblock %} {% block content %}
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
+        <h3>Assignment Details</h3>
+        <div class="btn-group">
+          {% if object.status == 'assigned' %}
+          <a
+            href="{% url 'core:assignment_update' object.pk %}"
+            class="btn btn-primary"
+          >
+            <i class="bi bi-pencil"></i> Edit
+          </a>
+          <a
+            href="{% url 'core:assignment_return' object.pk %}"
+            class="btn btn-warning"
+          >
+            <i class="bi bi-arrow-return-left"></i> Return
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Assignment Information</h5>
+            <dl class="row">
+              <dt class="col-sm-4">Status:</dt>
+              <dd class="col-sm-8">
+                <span class="badge badge-{{ object.status }}">
+                  {{ object.get_status_display }}
+                </span>
+              </dd>
+
+              <dt class="col-sm-4">Agent:</dt>
+              <dd class="col-sm-8">{{ object.agent_name }}</dd>
+
+              <dt class="col-sm-4">Quantity:</dt>
+              <dd class="col-sm-8">{{ object.assigned_quantity }}</dd>
+
+              <dt class="col-sm-4">Date:</dt>
+              <dd class="col-sm-8">
+                {{ object.assignment_date|date:"M d, Y H:i" }}
+              </dd>
+
+              <dt class="col-sm-4">Remarks:</dt>
+              <dd class="col-sm-8">{{ object.remarks|default:"-" }}</dd>
+            </dl>
+          </div>
+
+          <div class="col-md-6">
+            <h5>Item Information</h5>
+            <dl class="row">
+              <dt class="col-sm-4">Item:</dt>
+              <dd class="col-sm-8">
+                <a
+                  href="{% url 'core:inventory_detail' object.inventory_item.pk %}"
+                >
+                  {{ object.inventory_item.name }}
+                </a>
+              </dd>
+
+              <dt class="col-sm-4">Category:</dt>
+              <dd class="col-sm-8">
+                {{ object.inventory_item.category|default:"-" }}
+              </dd>
+
+              <dt class="col-sm-4">Available:</dt>
+              <dd class="col-sm-8 status-available">
+                {{ object.inventory_item.available_quantity }}
+              </dd>
+
+              <dt class="col-sm-4">In Use:</dt>
+              <dd class="col-sm-8 status-in-use">
+                {{ object.inventory_item.in_use_quantity }}
+              </dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <h5>Assignment History</h5>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-marker bg-success"></div>
+              <div class="timeline-content">
+                <h6 class="timeline-title">Assignment Created</h6>
+                <p class="timeline-text">
+                  {{ object.created_at|date:"M d, Y H:i" }}
+                </p>
+              </div>
+            </div>
+            {% if object.status == 'returned' %}
+            <div class="timeline-item">
+              <div class="timeline-marker bg-warning"></div>
+              <div class="timeline-content">
+                <h6 class="timeline-title">Item Returned</h6>
+                <p class="timeline-text">
+                  {{ object.updated_at|date:"M d, Y H:i" }}
+                </p>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a href="{% url 'core:assignment_list' %}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left"></i> Back to Assignments
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    padding: 20px 0;
+  }
+  .timeline-item {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 20px;
+  }
+  .timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .timeline-content {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #dee2e6;
+  }
+  .timeline-title {
+    margin-bottom: 5px;
+  }
+  .timeline-text {
+    color: #6c757d;
+    margin-bottom: 0;
+  }
+</style>
+{% endblock %}

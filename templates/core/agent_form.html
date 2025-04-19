@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block title %} {% if object %}Edit{% else %}Add{% endif %} Agent {% endblock %} {% block content %}
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h3>{% if object %}Edit{% else %}Add{% endif %} Agent</h3>
+      </div>
+      <div class="card-body">
+        <form method="post" class="ajax-form">
+          {% csrf_token %} {{ form|crispy }}
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+            <a
+              href="{% url 'core:agent_list' %}"
+              class="btn btn-secondary me-md-2"
+              >Cancel</a
+            >
+            <button type="submit" class="btn btn-primary">
+              {% if object %}Update{% else %}Create{% endif %} Agent
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block title %}Return
+Assignment{% endblock %} {% block content %}
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h3>Return Assignment</h3>
+      </div>
+      <div class="card-body">
+        <div class="mb-4">
+          <h5>Assignment Details</h5>
+          <dl class="row">
+            <dt class="col-sm-3">Item:</dt>
+            <dd class="col-sm-9">{{ assignment.inventory_item.name }}</dd>
+
+            <dt class="col-sm-3">Agent:</dt>
+            <dd class="col-sm-9">{{ assignment.agent_name }}</dd>
+
+            <dt class="col-sm-3">Quantity:</dt>
+            <dd class="col-sm-9">{{ assignment.quantity }}</dd>
+
+            <dt class="col-sm-3">Assignment Date:</dt>
+            <dd class="col-sm-9">
+              {{ assignment.assigned_date|date:"M d, Y" }}
+            </dd>
+          </dl>
+        </div>
+
+        <form method="post" class="ajax-form">
+          {% csrf_token %} {{ form|crispy }}
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+            <a
+              href="{% url 'core:assignment_list' %}"
+              class="btn btn-secondary me-md-2"
+              >Cancel</a
+            >
+            <button type="submit" class="btn btn-warning">
+              <i class="bi bi-arrow-return-left"></i> Return Item
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

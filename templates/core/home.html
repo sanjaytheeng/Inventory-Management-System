@@ -1,0 +1,191 @@
+{% extends 'base.html' %} {% load custom_filters %} {% block title %}Dashboard{% endblock %} {% block content %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h2 class="text-center">Dashboard</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Left Side: Summary Cards -->
+    <div class="col-lg-8 col-md-12">
+      <div class="row">
+        <!-- Inventory Summary Card -->
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <i class="fas fa-box fa-3x mb-3 text-dark"></i>
+              <h5 class="card-title">Inventory</h5>
+              <h3 class="card-text">{{ inventory_items|length }}</h3>
+              <p class="text-muted">Total Items</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Assignments Card -->
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <i class="fas fa-exchange-alt fa-3x mb-3 text-dark"></i>
+              <h5 class="card-title">Assignments</h5>
+              <h3 class="card-text">{{ assignments|length }}</h3>
+              <p class="text-muted">Recent Assignments</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Returned Assignments Card -->
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <i class="fas fa-undo fa-3x mb-3 text-dark"></i>
+              <h5 class="card-title">Returned</h5>
+              <h3 class="card-text">{{ returned_assignments|length }}</h3>
+              <p class="text-muted">Returned Assignments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Assignments Table -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+          <h4 class="mb-0">Recent Assignments</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead class="table-light">
+                <tr>
+                  <th>Item</th>
+                  <th>Agent</th>
+                  <th>Quantity</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for assignment in assignments %}
+                <tr>
+                  <td>{{ assignment.inventory_item.name }}</td>
+                  <td>{{ assignment.agent_name }}</td>
+                  <td>{{ assignment.quantity }}</td>
+                  <td>{{ assignment.assigned_date|date:"M d, Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">
+                    No recent assignments.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Graphs -->
+    <div class="col-lg-4 col-md-12">
+      <!-- Assignment Summary Chart -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">Assignment Summary</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="assignmentChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Inventory Summary Chart -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">Inventory Summary</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="inventoryChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Pie Chart for Assignment Summary
+    const assignmentCtx = document.getElementById("assignmentChart").getContext("2d");
+    const assignmentChart = new Chart(assignmentCtx, {
+      type: "pie",
+      data: {
+        labels: ["Assigned", "Returned", "Lost", "Damaged"],
+        datasets: [
+          {
+            label: "Assignment Status",
+            data: [
+              {{ assignment_status_counts.assigned }},
+              {{ assignment_status_counts.returned }},
+              {{ assignment_status_counts.lost }},
+              {{ assignment_status_counts.damaged }},
+            ],
+            backgroundColor: [
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+            ],
+            borderColor: [
+              "rgba(75, 192, 192, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 99, 132, 1)",
+              "rgba(255, 206, 86, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+        },
+      },
+    });
+
+    // Bar Chart for Inventory Summary
+    const inventoryCtx = document.getElementById("inventoryChart").getContext("2d");
+    const inventoryChart = new Chart(inventoryCtx, {
+      type: "bar",
+      data: {
+        labels: {{ inventory_items|map_attribute:'name'|safe }},
+        datasets: [
+          {
+            label: "Available Quantity",
+            data: {{ inventory_items|map_attribute:'available_quantity'|safe }},
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+          },
+          {
+            label: "In Use Quantity",
+            data: {{ inventory_items|map_attribute:'in_use_quantity'|safe }},
+            backgroundColor: "rgba(255, 99, 132, 0.2)",
+            borderColor: "rgba(255, 99, 132, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+        },
+      },
+    });
+  });
+</script>
+{% endblock %}

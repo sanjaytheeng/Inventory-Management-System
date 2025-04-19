@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3>Profile Settings</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" class="ajax-form">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Account Activity</h3>
+            </div>
+            <div class="card-body">
+                <p>View your recent account activity and security information.</p>
+                <a href="{% url 'authentication:activity' %}" class="btn btn-outline-primary">
+                    View Activity Log
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
