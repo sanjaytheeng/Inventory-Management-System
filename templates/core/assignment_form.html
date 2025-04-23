@@ -1,18 +1,36 @@
-{% extends 'base.html' %} {% load custom_filters %} {% load crispy_forms_tags %}
-{% block title %} {% if is_update %}Edit{% else %}New{% endif %} Assignment {%
-endblock %} {% block content %}
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  {% if is_update %}
+    Edit
+  {% else %}
+    New
+  {% endif %}
+  Assignment
+{% endblock %}
+
+{% block content %}
 <div class="container mt-4">
   <h1>
-    {% if is_update %} Edit Assignment {% else %} Create New Assignment {% endif
-    %}
+    {% if is_update %}
+      Edit Assignment
+    {% else %}
+      Create New Assignment
+    {% endif %}
   </h1>
   <div class="card shadow-sm">
     <div class="card-body">
-      <form method="post">
-        {% csrf_token %} {{ form|crispy }}
+      <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        {{ form|crispy }}
         <button type="submit" class="btn btn-primary">
-          {% if is_update %} Update Assignment {% else %} Create Assignment {%
-          endif %}
+          {% if is_update %}
+            Update Assignment
+          {% else %}
+            Create Assignment
+          {% endif %}
         </button>
       </form>
     </div>
@@ -20,10 +38,7 @@ endblock %} {% block content %}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<link
-  href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-  rel="stylesheet"
-/>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <script>
   $(document).ready(function () {
@@ -38,7 +53,7 @@ endblock %} {% block content %}
       allowClear: true,
       minimumInputLength: 2,
       ajax: {
-        url: '{% url "core:agent-autocomplete" %}',
+        url: "{% url 'core:agent-autocomplete' %}",
         dataType: "json",
         delay: 250,
         data: function (params) {

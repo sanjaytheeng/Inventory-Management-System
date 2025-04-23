@@ -20,9 +20,8 @@ urlpatterns = [
     path('assignments/add/', views.AssignmentCreateView.as_view(), name='assignment_create'),
     path('assignments/<int:pk>/', views.AssignmentDetailView.as_view(), name='assignment_detail'),
     # path('assignments/<int:pk>/edit/', views.AssignmentUpdateView.as_view(), name='assignment_update'),
-    path('assignments/<int:pk>/return/', views.assignment_return, name='assignment_return'),
-    path('assignments/<int:pk>/delete/', views.AssignmentDeleteView.as_view(), name='assignment_delete'),
     path('assignments/<int:pk>/return/', views.mark_assignment_as_returned, name='assignment_return'),
+    path('assignments/<int:pk>/delete/', views.AssignmentDeleteView.as_view(), name='assignment_delete'),
     
     path('agents/', views.AgentListView.as_view(), name='agent_list'),
     path('agents/add/', views.AgentCreateView.as_view(), name='agent_create'),

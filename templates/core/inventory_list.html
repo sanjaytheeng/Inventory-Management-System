@@ -29,7 +29,14 @@
       <tbody>
         {% for item in inventory_items %}
         <tr>
-          <td>{{ item.name }}</td>
+          <td>
+            <a
+              href="{% url 'core:inventory_detail' item.id %}"
+              class="text-decoration-none"
+            >
+              {{ item.name }}
+            </a>
+          </td>
           <td>{{ item.category }}</td>
           <td>{{ item.total_quantity }}</td>
           <td>{{ item.in_use_quantity }}</td>

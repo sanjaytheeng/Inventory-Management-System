@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.db import models, transaction
 from .models import InventoryItem, Agent, Assignment, TransactionLog
 from .forms import (
     InventoryItemForm, AgentForm, AssignmentForm,
@@ -17,7 +18,6 @@ from django.db.models import Sum, Q
 from django.utils import timezone
 from django.utils.timezone import now
 from dal import autocomplete
-from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
 
@@ -62,6 +62,20 @@ class InventoryDetailView(DetailView):
     model = InventoryItem
     template_name = 'core/inventory_detail.html'
     context_object_name = 'object'
+
+    def get_queryset(self):
+        return InventoryItem.objects.prefetch_related(
+            models.Prefetch(
+                'assignments',
+                queryset=Assignment.objects.select_related('agent').order_by('-assigned_date')
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_assignments'] = self.object.assignments.filter(status='assigned')
+        context['past_assignments'] = self.object.assignments.exclude(status='assigned')
+        return context
 
 @method_decorator(login_required, name='dispatch')
 class InventoryCreateView(CreateView):
@@ -290,6 +304,7 @@ def assignment_return(request, pk):
         form = AssignmentReturnForm(request.POST, instance=assignment)
         if form.is_valid():
             assignment.status = 'returned'
+            assignment.return_date = timezone.now()  # Set the return date
             assignment.save()
 
             # Log the transaction

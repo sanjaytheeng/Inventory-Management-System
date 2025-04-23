@@ -65,8 +65,7 @@
       </div>
       <div class="card-body">
         <div class="list-group list-group-flush">
-          {% for assignment in object.assignmentrecord_set.all %} {% if
-          assignment.status == 'assigned' %}
+          {% for assignment in object.assignmentrecord_set.all %} {% if assignment.status == 'assigned' %}
           <div class="list-group-item">
             <div class="d-flex w-100 justify-content-between">
               <h6 class="mb-1">{{ assignment.inventory_item.name }}</h6>
